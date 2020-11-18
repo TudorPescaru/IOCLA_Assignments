@@ -1,0 +1,63 @@
+2020 Pescaru Tudor-Mihai 321CA
+
+1. One Time Pad
+
+Iteram de la final la inceput prin caracterele din plaintext si prin 
+caracterele din key, in acelasi timp, facand XOR intre cele doua 
+caractere la fiecare pas. Rezultatul se pune mai apoi pe aceeasi pozitie cu 
+pozitia de unde au fost luate cele doua caractere ce l-au compus, in 
+ciphertext.
+
+2. Caesar Cipher
+
+Convertim key la intervalul 0-26 ,in cazul in care aceasta depaseste 26, 
+prin scaderi repetate, astfel simuland operatia de %(modulo). Luam fiecare 
+caracter din plaintext, de la final la inceput si il comparam initial cu A si 
+Z iar mai apoi cu a si z pentru a determina daca acesta este litera. In caz 
+afirmativ caracterul este prelucrat in mod diferit daca este sau nu 
+majuscula. In cazul in care caracterul este o litera, se adauga key si se 
+verifica daca noul caracter depaseste 'z', respectiv 'Z' in cazul in care 
+acesta era initial minuscula sau majuscula. In caz afirmativ se scade 26 din 
+valoarea codului ASCII a caracterului pentru a obtine echivalent-ul dupa 
+"wrap-arround". In final, caracterul este adaugat la ciphertext pe pozitia 
+corespunzatoare indiferent daca acesta a fost modificat sau nu.
+
+3. Vigenere Cipher
+
+Initial se aduc toate caracterele din key la valoarea relativa literei 'A', 
+scazand din acestea codul ASCII al literei 'A'. Apoi se aplica un algoritm 
+similar cu cel de la Caesar Cipher pentru a determina ce caractere trebuie 
+modificate si pentru a le modifica, acesta avand in plus doar faptul ca, 
+pentru a obtine cheia de encriptie pt fiecare litera se itereaza prin 
+caracterele din key si se adauga caracterul curent din key la caracterul 
+curent din plaintext. In cazul in care index-ul din key ajunge la 0 acesta 
+este reluat de la 0 pentru a continua encriptia. Caracterul se adauga in 
+ciphertext pe pozitia corespunzatoare, indiferent daca a fost modificat sau 
+nu.
+
+4. StrStr
+
+Se verifica de la final la inceput caracterele din haystack si cele din 
+needle. In cazul in care cele doua caractere sunt egale, se trece la 
+urmatorul caracter atat din haystack cat si din needle. In cazul in care 
+caracterele nu sunt egale, se avanseaza la urmatorul caracter din haystack si 
+se revine la ultimul caracter din needle. Atunci cand am terminat de trecut 
+prin toate caracterele din needle se retine pozitia si se trece mai departe. 
+Astfel, ultima pozitie inregistrata va fi prima aparitie a lui needle in 
+haystack. In cazul in care valoarea initiala a memoratorului de pozitie a 
+ramas -1, se returneaza lungimea lui haystack + 1.
+
+5. Binary to Hexadecimal
+
+Prin scaderi repetate se determina daca numarul total de biti poate fi 
+impartit in grupuri de 4 sau daca mai raman biti ce nu formeaza un grup. 
+Bitii ce raman in afara unui grup sunt procesati primii apoi se trece la 
+bitii grupati cate 4. Fiecare bit este preluat ca si caracter, apoi se scade 
+48 din valoarea ASCII pentru a face conversia la valoarea 0 sau 1. Pentru 
+fiecare grup de biti se initializeaza o suma cu 0, se shifteaza suma la 
+stanga cu o pozitie si se adauga valoarea bitului curent. Dupa 4 astfel de 
+operatii se utilizeaza valoarea grupului pentru a obtine caracterul 
+hexazecimal dintr-un array predefinit. Acest caracter se plaseaza in array-ul 
+de caractere hexazecimale conform unui index ce este incrementat separat. La 
+final se adauga '\n' pe ultima pozitie a array-ului.
+
