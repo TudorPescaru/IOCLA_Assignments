@@ -50,6 +50,7 @@ iocla_atoi:
     mov     ecx, 0
     mov     dword [neg], 0
     xor     edx, edx
+
 ; Check if number is negative
     cmp     byte [ebx], '-'
     jne     poz
@@ -233,6 +234,7 @@ add_node:
     call    add_node
     add     esp, 8
 
+; Check if added flag is 1 (node has already been added)
     mov     ecx, [added]
     cmp     ecx, 1
     je      return
@@ -272,8 +274,10 @@ add_node:
     push    ebx
     call    strcpy
     add     esp, 8
+; Set added flag to 1
     mov     ecx, 1
     mov     [added], ecx
+
     jmp     return
 
 right:
@@ -312,6 +316,8 @@ right:
     push    ebx
     call    strcpy
     add     esp, 8
+
+; Set added flag to 1
     mov     ecx, 1
     mov     [added], ecx
 
@@ -321,4 +327,3 @@ return:
     pop     ebx
     leave
     ret
-

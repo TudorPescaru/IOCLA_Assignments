@@ -40,3 +40,13 @@ The fifth and final assignment required us to implement a **binary to
 hexadecimal** converter that worked on bit arrays of variable lengths, not 
 necessarily multiple of 4 lengths.
 
+## IOCLA 3
+
+The third assignment involved parsing a prefix notation expression containing 
+both positive and negative numbers as well as large numbers, and creating an 
+**Abstract Syntax Tree** in which the nodes are operators and the leaves are 
+operands. This tree was evaluated by a checker function given to us. The 
+assignment also required the implemntation of the C **atoi** function that was 
+used to evaluate the expresion. This function was used due to the fact that the 
+tree nodes contained string numbers instead of actual integers.
+

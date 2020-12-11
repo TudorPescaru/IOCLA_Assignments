@@ -1,0 +1,39 @@
+Copyright 2020 Pescaru Tudor-Mihai 321CA
+
+iocla_atoi
+
+Pentru a realiza functia iocla_atoi am inceput prin a calcula lungimea 
+numarului dat si a o stoca pentru utilizarea mai tarziu. Am folosit o 
+variabila pentru a retine daca numarul este negativ. Pentru a verifica 
+daca numarul este negativ, am verificat daca primul caracter din string-ul 
+numarului dat este '-'. In caz afirmativ, variabila neg devine 1, iar 
+parsarea string-ului incepe de la al doilea caracter. Pentru a calcula 
+numarul, am initializat regsitrul eax cu 0. Pentru fiecare cifra din string 
+inmultim eax cu 10, scadem din caracterul ce contine cifra 48 pentru a-l 
+convertii la int si il adaugam la eax. La final verificam daca numarul 
+trebuie sa fie convertit la negativ, iar in caz afirmativ il scadem din 0.
+
+create_tree
+
+Pentru a construi tree-ul am folosit functia strtok pentru a sparge string-ul 
+dat initial in cuvinte. Folosind primul cuvant am creeat nodul root. Pentru 
+a creea un nod am alocat 12 bytes de memorie folosind calloc, apoi am alocat 
+memorie pentru data din acel nod, alocand atatia bytes cat era lungimea 
+cuvantului ce trebuie pus in nod. In continuare, folosind tot strtok am trecut
+prin restul cuvintelor pana am ajuns la null, apeland pentru fiecare cuvant 
+functia recursiva ce va adauga nodul cu acel cuvant. Functia recursiva 
+primeste ca parametrii, nodul root si cuvantul ce va trebui adaugat in nod. 
+In functia recursiva, prima data, am verificat daca nodul in care ne aflam 
+contine un numar sau este null. In caz afirmativ se face return. Pentru a 
+verifica daca nodul contine un numar am calculat lungime string-ului din data.
+Daca lungimea este mai mare de 1 atunci avem un numar, altfel string-ul este 
+de fapt un singur caracter si verificam daca caracterul este o cifra. Dupa 
+aceste verificari vom apela functia pe left-ul nodului curent iar apoi pe 
+right-ul nodului curent. Dupa aceste apeluri vom ajunge pe un nod ce contine 
+un operator si ce are cel putin unul dintre copii null. Verificam daca nu am 
+adaugat deja nodul, verificare ce se realizeaza utilizand un "flag" global. 
+Aceasta verificare este necesara pentru a nu adauga acelasi nod de mai multe 
+ori la intoarcerea din recursivitate. Daca nodul nu a fost deja adaugat, 
+verificam care dintre copii nodului curent este null, si adaugam noul nod 
+pe acea pozitie, folosind procedura de creare a unui nod descrisa mai sus. 
+Dupa adaugare setam "flag-ul" ca si adaugat si facem return.
