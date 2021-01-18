@@ -1,0 +1,97 @@
+Copyright 2021 Pescaru Tudor-Mihai 321CA
+
+1. Analiza binarului
+
+In cadrul binarului "nice", functia de la adresa 0x080492de contine o 
+vulnerabilitate de tip buffer overflow. In cadrul acestei functii, se declara 
+un array cu o lungime de 170 bytes. Mai apoi se citesc de la stdin, prin 
+intermediul functiei read(), 281 bytes in acest array. Deoarece acest array 
+este alocat pe stack, prin overflow se pot rescrie alte elemente aflate pe 
+stack. Pentru a determina toate acestea am utilizat programul Ghidra pentru 
+dezasamblarea executabilului si pentru analizarea codului/instructiunilor 
+din spatele acestuia.
+
+2. Spargerea binarului
+
+NICE_FLAG{912759ebc8269fa33a2727c6bf7d8e68}
+
+Pentru obtinerea flag-ului am folosit un payload ce va suprascrie adresa de 
+return de pe stiva, in cadrul functiei vulnerabile. Parcurgand programul 
+utilizand pwndbg, am observat faptul ca adresa de return a functiei se afla 
+la ebp + 4. Astfel, payload-ul va contine 170 bytes, reprezentati de caractere 
+"a", pentru a incarca la maxim array-ul declarat, inca 4 bytes de caractere 
+"a" pentru a ocupa primii 4 bytes dupa ebp si in final, 4 bytes ce vor 
+reprezenta adresa functiei "print_flag", scrisi in forma little endian, adica 
+"\x91\x92\x04\x08". Acesti ultimi bytes vor fi incarcati in eip la finalul 
+executiei functiei, facand executia programului sa treaca la functia 
+"print_flag".
+
+3. Spargerea binarului v2
+
+NAUGHTY_FLAG{a69b654b489651496a8906207211d340}
+
+In cazul binarului "naughty", se poate observa faptul ca toate cele 5 functii 
+apelate din main sunt vulnerabile atacurilor de tip buffer overflow, deoarece 
+in toate se citesc dimensiuni ce depasesc dimensiunile array-urilor alocate, 
+dupa cum urmeaza:
+
+0x080492de: se vor citii 131 bytes de la stdin intr-un buffer de 44 bytes
+0x08049308: se vor citii 211 bytes de la stdin intr-un buffer de 23 bytes
+0x08049335: se vor citii 140 bytes de la stdin intr-un buffer de 132 bytes
+0x08049362: se vor citii 282 bytes de la stdin intr-un buffer de 201 bytes
+0x08049398: se vor citii 266 bytes de la stdin intr-un buffer de 185 bytes
+
+Din toate acestea, functia ce va sta la baza exploit-ului este cea de la 
+adresa 0x08049362 deoarece aceasta contine un parametru al carei valoare 
+va fi apelata ca o functie si deoarece overflow-ul realizat este destul de 
+mare pentru a permite suprascrierea valorii acestui parametru. Pentru a ajunge 
+la executia acestei functii trebuie sa trecem prin celelalte 3 functii, 
+fiecare necesitand suprascrierea unei variabile locale pentru a trece de o 
+verificare realizata inainte de terminarea functiei.
+
+Pentru realizarea payload-ului am creeat mai multe seturi de bytes ce vor 
+umple fiecare buffer si vor suprascrie variabila locala cu valoarea necesara 
+pentru trecerea la urmatoarea functie. Astfel, pentru prima functie vom avea 
+44 bytes de "a", urmatorii 4 bytes egali cu valoarea 0x360e1e7b si inca 83 
+bytes de "a" pentru a ajunge la dimensiunea citita. Pentru a doua functie 
+vom avea, in continuare, 23 bytes de "a", urmatorii 4 bytes egali cu 
+valoarea 0x07257895 si inca 184 bytes de "a" pentru a ajunge la dimensiunea 
+citita. Pentru a treia functie vom avea, in continuare, 132 bytes de "a", 
+urmatorii 4 bytes egali cu valoarea 0xb8586c08 si inca 4 bytes de "a" pentru 
+a ajunge la dimensiunea citita. Pentru ultima functie vom avea, in 
+continuare, 201 bytes de "a", urmatorii 4 bytes egali cu valoarea 
+0xf8839be0, inca 73 bytes de "a" si in final 4 bytes ce vor contine adresa 
+functiei "print_flag", 0x08049291.
+
+4. Bonus - Shellcode
+
+Shellcode-ul ce va creea shell-ul a fost luat de la link-ul urmator:
+
+https://stackoverflow.com/questions/2859127/shellcode-for-a-simple-stack-overflow-exploited-program-with-shell-terminates-d/43109534#43109534
+
+Deoarece, dupa introducerea payload-ului la input-ul binarului naughty, stdin 
+se inchide sesiunea de shell va pornii si se va inchide la loc instantaneu. 
+Pentru a rezolva aceasta problema, codul de mai sus deschide mai intai o 
+sesiune de /dev/tty ce va permite introducerea de comenzi in shell si ce va 
+asigura pastrarea procesului de shell in rulare pana la incheiere manuala. 
+Dupa deschiderea conexiunii la /dev/tty se va utiliza un apel al execve() 
+pentru a pornii procesul /bin/sh.
+
+Payload-ul pentru acest exploit va porni de la o baza similara cu payload-ul 
+utilizat pentru obtinearea flag-ului. Baza comuna va avea continutul necesar 
+pentru a ajunge pana la apelul din cadrul celei de-a patra functii. Fata de 
+payload-ul folosit pentru flag, acest payload va diferii prin ulimii 77 de 
+bytes. In loc ca acestia sa fie 73 de bytes de "a" si dupa adresa functiei 
+"print_flag", ultimii 77 de bytes vor contine 7 bytes de "a" pentru padding, 
+8 bytes de "\x90" sau instructiunea NOP (acestia se numesc NOP sled), 
+shellcode-ul de 58 bytes in lungime si ultimii 4 bytes vor contine o adresa 
+din zona de nop_sled, aleasa convenabil. In momentul in care se apeleaza pe 
+baza adresei din ultimii 4 bytes, aceasta adresa se va incarca in eip, iar 
+de la aceea adresa se vor procesa in ordine toate instructiunile. Pana se 
+ajunge la shellcode se vor procesa instructiunile NOP care nu fac nimic. 
+Mai apoi se vor procesa instructiunile din shellcode ce vor realiza operatiile 
+descrise anterior. Datorita faptului ca spatiul de adrese poate diferii de la 
+masina la masina si chiar de la o rulare a masinii la alta, singurul lucru ce 
+trebuie modificat pentru a face payload-ul sa functioneze este modificarea 
+adresei ce va fi incarcata in eip pentru a asigura faptul ca aceasta se afla 
+in zona de NOP sled.

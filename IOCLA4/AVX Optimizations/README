@@ -1,0 +1,40 @@
+Copyright 2021 Pescaru Tudor-Mihai 321CA
+
+1. C
+
+Mai intai vom calcula numarul de elemente ce depasesc ultimul multiplu de 8 
+pana la n. Mai apoi vom realiza calcule pe cate 8 elemente de cate ori se 
+poate, urmand ca mai apoi sa realizam aceleasi calcule si pe elementele 
+ramase. Aceste calcule se impart in doua grupuri. Prima data vom lua cate 8 
+elemente din A si B, incarcandu-le in vectori de tip __m256 si inmultind cei 
+doi vectori. Apoi se va adauga la o suma totala fiecare element din vectorul 
+rezultat. Intr-un alt vector __m256 vom incarca 8 elemente din C asupra carora 
+vom realiza operatia sqrt. Elementele din vectorul rezultat vor fi stocate pe 
+pozitiile lor corespunzatoare din D. Dupa ce am realizat aceste operatii pe 
+toate elementele si am obtinut suma totala, adica scalarul rezultat din A * B 
+vom creea un vector __m256 umplut cu aceasta suma. In continuare com trece din 
+nou prin D, incarcand elementele deja existente in acesta intr-un vector 
+__m256, adunand la acesta vectorul ce contine suma si apoi stocand rezultatele 
+pe pozitiile corespunzatoare din D.
+
+2. ASM
+
+Mai intai vom convertii numarul de elemente la numarul de bytes pentru a putea 
+trece prin acestia. Procesarea se ve realiza prin intermediul unor vectori 
+__m256i in care vom incarca cate 8 elemente din A si B folosind adresa 
+vectorului + rcx. Pentru a obtine patratul elementelor din vectorul A, vom 
+convertii vectorul __m256i la un vector__m256 ce contine elemente de tip float 
+si vom apela functia de inmultire a doi vectori de tip float, inmultind 
+vectorul cu el insusi. Am folosit aceasta metoda deoarece inmultirea intre 
+vectori de tip float este mai usoara decat cea intre vectori de tip int. In 
+final, vectorul de float rezultat va fi convertit inapoi la vector de tip int. 
+Pentru a obtine dublul elementelor din B, am folosit functia ce aduna doi 
+vectori de tip int, adunand la vector pe el insusi. In final, am adunat 
+vectorul cu elemente ridicate la puterea 2 cu vectorul cu elemente inmultite 
+cu 2 iar elmentele din vectorul rezultat au fost stocate pe pozitiile lor 
+corespunzatoare din C.
+
+3. Timpi de rulare
+
+C:		1.6173
+ASM:	3.0673
