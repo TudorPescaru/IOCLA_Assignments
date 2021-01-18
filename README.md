@@ -50,3 +50,11 @@ assignment also required the implemntation of the C **atoi** function that was
 used to evaluate the expresion. This function was used due to the fact that the 
 tree nodes contained string numbers instead of actual integers.
 
+## IOCLA 4
+
+The fourth assignemnt consisted of two parts. The first part involved 
+performing buffer overflow exploits on two binaries to get a secret flag and 
+to run a shellcode which will spawn a shell. The second part involved 
+utilising AVX and AVX2 functions and instructions in C and Assembly to speed 
+up vector operations.
+
